@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tarnett.mapper.FavoriteMapper">
+    <select id="selectByRidAndUid" resultType="com.tarnett.pojo.Favorite">
+        select * from tab_favorite where rid=#{rid} and uid=#{uid}
+    </select>
+    <insert id="insert" parameterType="com.tarnett.pojo.Favorite">
+        insert into tab_favorite(rid,date,uid) values(#{rid},#{date},#{uid})
+    </insert>
+    <delete id="deleteByRidAndUid" parameterType="com.tarnett.pojo.Favorite">
+        delete from tab_favorite where rid=#{rid} and uid=#{uid}
+    </delete>
+    <select id="selectMyFavoriteByUid" parameterType="int" resultType="com.tarnett.pojo.Route">
+        select r.* from tab_favorite f,tab_route r where uid=#{uid} and  r.rid=f.rid
+    </select>
+
+</mapper>

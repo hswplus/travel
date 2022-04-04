@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tarnett.mapper.RouteMapper">
+    <resultMap id="RouteAndSeller" type="com.tarnett.pojo.Route">
+        <id column="rid" property="rid"/>
+        <result column="rname" property="rname"/>
+        <result column="price" property="price"/>
+        <result column="routeIntroduce" property="routeIntroduce"/>
+        <result column="rflag" property="rflag"/>
+        <result column="rdate" property="rdate"/>
+        <result column="count" property="count"/>
+        <result column="rimage" property="rimage"/>
+        <result column="sid" property="sid"/>
+
+        <association property="seller" javaType="com.tarnett.pojo.Seller">
+        <id column="sid" property="sid"/>
+        <result column="sname" property="sname"/>
+        <result column="consphone" property="consphone"/>
+        <result column="address" property="address"/>
+        </association>
+    </resultMap>
+    
+    <!--根据cid去查询该分类下面的所用旅游产品-->
+<!--    <select id="selectPageByCid" resultType="com.tarnett.pojo.Route">-->
+<!--        select t1.* from tab_route t1, tab_category_route t2 where t1.rid = t2.rid-->
+<!--        <if test="cid != null and cid > 0">-->
+<!--        and t2.cid = #{cid}-->
+<!--        </if>-->
+<!--        <if test="queryString != null and queryString.length > 0 and queryString != '%null%'">-->
+<!--            and t1.rname like #{queryString}-->
+<!--        </if>-->
+<!--    </select>-->
+
+    <select id="selectPageByCid" resultType="com.tarnett.pojo.Route">
+        select t1.* from tab_route t1 left join tab_category_route t2 on t1.rid = t2.rid where 1 = 1
+        <if test="cid != null and cid > 0">
+            and t2.cid = #{cid}
+        </if>
+        <if test="queryString != null and queryString.length > 0 and queryString != '%null%'">
+            and t1.rname like #{queryString}
+        </if>
+    </select>
+
+    <select id="selectByCountDescLimit" parameterType="int" resultType="com.tarnett.pojo.Route">
+        SELECT * FROM tab_route ORDER BY COUNT DESC LIMIT #{count}
+    </select>
+
+    <select id="selectRouteAndSellerByRid" parameterType="int" resultMap="RouteAndSeller">
+         SELECT * FROM tab_route t1,tab_seller t2 WHERE t1.sid = t2.sid AND t1.rid=#{rid}
+    </select>
+    <update id="updateCountAddByRid" parameterType="int">
+        update tab_route set count =count + 1 where rid=#{rid}
+    </update>
+    <update id="updateCountSubByRid" parameterType="int">
+        update tab_route set count =count - 1 where rid=#{rid}
+    </update>
+</mapper>
